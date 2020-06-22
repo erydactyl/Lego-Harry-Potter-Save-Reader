@@ -134,6 +134,11 @@
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
+            // timer2
+            // 
+            this.timer2.Interval = 1000;
+            this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
+            // 
             // panel1
             // 
             this.panel1.Controls.Add(this.label1);
@@ -168,6 +173,7 @@
             this.button7.TabIndex = 9;
             this.button7.Text = "Reset";
             this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // button6
             // 

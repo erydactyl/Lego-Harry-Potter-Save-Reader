@@ -19,7 +19,7 @@ namespace Lego_Harry_Potter_Save_Reader
         {
             InitializeComponent();
         }
-        private void update()
+        private void updatePercentage()
         {
             try
             {
@@ -49,9 +49,35 @@ namespace Lego_Harry_Potter_Save_Reader
             }
         }
 
+        private void updateTimer()
+        {
+            try
+            {
+                TimerContents[0]++;
+                if (TimerContents[0]>=60)
+                {
+                    TimerContents[0] -= 60;
+                    TimerContents[1]++;
+                    if (TimerContents[1]>=60)
+                    {
+                        TimerContents[1] -= 60;
+                        TimerContents[2]++;
+                    }
+                    
+                }
+                string sTimerContents = TimerContents[2].ToString("D2") + ":" + TimerContents[1].ToString("D2") + ":" + TimerContents[0].ToString("D2");
+                File.WriteAllText(@textBox3.Text, sTimerContents);
+                label2.Text = sTimerContents;
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
-            update();
+            updatePercentage();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -97,13 +123,16 @@ namespace Lego_Harry_Potter_Save_Reader
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            update();
+            updatePercentage();
         }
+
+
 
         private void Form1_Load(object sender, EventArgs e)
         {
             textBox1.Text = Properties.Settings.Default.PreviousSaveFile;
             textBox2.Text = Properties.Settings.Default.PreviousTextFile;
+            textBox3.Text = Properties.Settings.Default.PreviousTimerFile;
         }
 
         private void button6_Click(object sender, EventArgs e)
@@ -111,11 +140,13 @@ namespace Lego_Harry_Potter_Save_Reader
             if (timer2.Enabled)
             {
                 button6.Text = "Start";
+                button7.Enabled = true;
                 timer2.Stop();
             }
             else
             {
                 button6.Text = "Stop";
+                button7.Enabled = false;
                 timer2.Start();
             }
         }
@@ -137,9 +168,15 @@ namespace Lego_Harry_Potter_Save_Reader
                 }
                 else
                 {
-                    File.WriteAllText(@textBox3.Text, "");
+                    File.WriteAllText(@textBox3.Text, "00:00:00");
+                    for (int i = 0; i < TimerContents.Length; i++)
+                    {
+                       TimerContents[i] = 0;
+                    }
                 }
-                
+                Properties.Settings.Default.PreviousTimerFile = textBox3.Text;
+                Properties.Settings.Default.Save();
+
             }
             catch (Exception ex)
             {
@@ -160,6 +197,29 @@ namespace Lego_Harry_Potter_Save_Reader
                 this.TopMost = true;
                 button8.Font = new Font(button8.Font, FontStyle.Bold);
             }
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                File.WriteAllText(@textBox3.Text, "00:00:00");
+                label2.Text = "00:00:00";
+                for (int i = 0; i < TimerContents.Length; i++)
+                {
+                    TimerContents[i] = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+           
+        }
+
+        private void timer2_Tick(object sender, EventArgs e)
+        {
+            updateTimer();
         }
     }
 }

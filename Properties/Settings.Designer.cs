@@ -46,5 +46,17 @@ namespace Lego_Harry_Potter_Save_Reader.Properties {
                 this["PreviousTextFile"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PreviousTimerFile {
+            get {
+                return ((string)(this["PreviousTimerFile"]));
+            }
+            set {
+                this["PreviousTimerFile"] = value;
+            }
+        }
     }
 }
