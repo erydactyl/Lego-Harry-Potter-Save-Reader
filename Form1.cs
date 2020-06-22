@@ -15,6 +15,7 @@ namespace Lego_Harry_Potter_Save_Reader
     {
         Functions f = new Functions();
         int[] TimerContents = new int[3];
+        string sTimerContents = "";
         public Form1()
         {
             InitializeComponent();
@@ -65,13 +66,32 @@ namespace Lego_Harry_Potter_Save_Reader
                     }
                     
                 }
-                string sTimerContents = TimerContents[2].ToString("D2") + ":" + TimerContents[1].ToString("D2") + ":" + TimerContents[0].ToString("D2");
+                sTimerContents = TimerContents[2].ToString("D2") + ":" + TimerContents[1].ToString("D2") + ":" + TimerContents[0].ToString("D2");
                 File.WriteAllText(@textBox3.Text, sTimerContents);
                 label2.Text = sTimerContents;
             }
             catch (Exception ex)
             {
 
+            }
+        }
+
+        private void openTimerFile()
+        {
+            if (File.Exists(textBox3.Text))
+            {
+                sTimerContents = f.LoadTimer(textBox3.Text);
+                label2.Text = sTimerContents;
+                string[] saTimerContents = sTimerContents.Split(':');
+                Array.Reverse(saTimerContents);
+                TimerContents = Array.ConvertAll(saTimerContents, int.Parse);
+            }
+            else
+            {
+                for (int i = 0; i < TimerContents.Length; i++)
+                {
+                    TimerContents[i] = 0;
+                }
             }
         }
 
@@ -133,6 +153,7 @@ namespace Lego_Harry_Potter_Save_Reader
             textBox1.Text = Properties.Settings.Default.PreviousSaveFile;
             textBox2.Text = Properties.Settings.Default.PreviousTextFile;
             textBox3.Text = Properties.Settings.Default.PreviousTimerFile;
+            openTimerFile();
         }
 
         private void button6_Click(object sender, EventArgs e)
@@ -157,23 +178,8 @@ namespace Lego_Harry_Potter_Save_Reader
             {
                 saveFileDialog2.ShowDialog();
                 textBox3.Text = saveFileDialog2.FileName;
-                string sTimerContents = "";
-                if (File.Exists(textBox3.Text))
-                {
-                    sTimerContents = f.LoadTimer(textBox3.Text);
-                    label2.Text = sTimerContents;
-                    string[] saTimerContents = sTimerContents.Split(':');
-                    Array.Reverse(saTimerContents);
-                    TimerContents = Array.ConvertAll(saTimerContents, int.Parse); //TimerContents[0] is seconds, [1] is mins, [2] is hours
-                }
-                else
-                {
-                    File.WriteAllText(@textBox3.Text, "00:00:00");
-                    for (int i = 0; i < TimerContents.Length; i++)
-                    {
-                       TimerContents[i] = 0;
-                    }
-                }
+                openTimerFile();
+                if (!File.Exists(textBox3.Text)){ File.WriteAllText(@textBox3.Text, "00:00:00"); }
                 Properties.Settings.Default.PreviousTimerFile = textBox3.Text;
                 Properties.Settings.Default.Save();
 
